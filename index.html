@@ -196,6 +196,10 @@
             font-family: -apple-system, system-ui, BlinkMacSystemFont;
         }
         
+        #secondbutton {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+        }
+        
         #legends {
             position: relative;
             margin-left: 16%;
@@ -303,18 +307,16 @@
             Which countries did the best in corresponding attributes?
         </p>
         <p id="descriptive-text">
-            You could interact with the map to see what happens. There are multiple factors that helps to contribute to its happiness index. The extents of family(Family), each country's economical development(GDP), the life expectancy(Life), personal freedom(Freedom),
-            extent of corruption(Trust) and Generosity of each country's people all contributed to its happiness index score. If you want to know which country does the best on certain factors, you could click on the buttons below the lollipop chart and
-            zoom in and out with the map to see what happens.
+            Besides of GDP we have other factors that contributes to the happiness index of a country. Click a few of them to explore it!
         </p>
         <br>
 
 
     </div>
 
-    <div id="mapDiv">
+    <div id="mapDiv" height="800" width="1800">
 
-        <h4 id="descriptive-text">Choose a filter</h4>
+        <h4 id="descriptive-text">Choose a filter to see the top countries that did well in those attributes!</h4>
         <div id="buttonPanel"> </div>
         <br>
         <br>
@@ -324,7 +326,7 @@
 
             <div id="secondbutton">
                 <div id="secondtitle">
-                    <ul id="sectitle">What's the Top Ten Country ranked for each categories you selected?</ul>
+                    <ul id="sectitle">What's the Top Ten Country ranked for each attributes you selected?</ul>
                 </div>
                 <div id="my_dataviz"></div>
             </div>
@@ -530,6 +532,7 @@
 
             .attr("label", d => d["Country"])
                 .on("mouseover", mouseover);
+
 
             /////////// newly added mouseover event//////////
             circles.on("mouseover", function(d) {
@@ -742,7 +745,7 @@
                 height2 = 400 - margin2.top - margin2.bottom;
 
 
-            //////////////wtf????????
+            //////////////
             var svg2 = d3.select("#my_dataviz")
                 .append("svg")
                 .attr("width", width2 + margin2.left + margin2.right)
@@ -795,11 +798,11 @@
                         .transition()
                         .selectAll("text")
                         .style("text-anchor", "end")
-                        .style("font-family", "Trebuchet MS")
+                        .style("font-family", " -apple-system, system-ui, BlinkMacSystemFont;")
                         .style("font-size", 14)
                         .attr("dx", "-.8em")
                         .attr("dy", ".15em")
-                        .attr("transform", "rotate(-65)");
+                        .attr("transform", "rotate(-30)");
 
 
                     var yAxis = svg2.append("g")
@@ -831,10 +834,8 @@
                         .duration(1000)
                         .attr("cx", d => countryScale(d.Country))
                         .attr("cy", d => factorScale(d[factor]))
-                        .attr("r", 13)
-                        .attr("fill", "#ccccff");
-                    //circle
-                    //.enter()
+                        .attr("r", 5)
+                        .attr("fill", "#ad1453");
 
 
 
