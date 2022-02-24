@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFO 4311 HW2</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <style>
+        .legend span {
+            margin-right: 10px;
+        }
+        
+        .gridlines line {
+            stroke: #bbb;
+        }
+        
+        .gridlines .domain {
+            stroke: none;
+        }
+        
+        div.tooltip {
+            position: relative;
+            text-align: center;
+            width: 150px;
+            height: 28px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        
+        .country {
+            fill: white;
+        }
+        
+        g.mouseover rect {
+            fill: white;
+            stroke: #222;
+            stroke-width: 1px;
+        }
+        
+        .outline {
+            stroke: #bbb;
+            stroke-width: 1px;
+            fill: none;
+        }
+        
+        .graticule {
+            fill: none;
+            stroke: black;
+            stroke-width: 1px;
+        }
+        
+        .gridlines line {
+            stroke: #bbb;
+        }
+        
+        #container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            /* font-family: 'Michroma'; */
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 22px;
+            color: #484848;
+            margin-left: 150px;
+        }
+        
+        .gridlines .domain {
+            stroke: none;
+        }
+        
+        .footer {
+            margin: 0;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            text-align: center;
+            background-color: #e0e0e0;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+        }
+        
+        .footer {
+            margin: 0;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            text-align: center;
+            background-color: #e0e0e0;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+        }
+        
+        #mapDiv {
+            text-align: center;
+            float: center;
+            display: block;
+            align: center;
+            margin-top: 50px;
+            border-color: black;
+        }
+        
+        #container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 22px;
+            color: #484848;
+            margin-left: 150px;
+        }
+        
+        .container {
+            justify-content: center;
+        }
+        
+        #scatterplotdiv {
+            text-align: center;
+        }
+        
+        #secondbutton {
+            text-align: center;
+            float: right;
+            flex-direction: row;
+        }
+        
+        .label {
+            float: right;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 15px;
+        }
+        /*        #my_dataviz {
+            float: right;
+        }*/
+        
+        #title {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-weight: 650;
+            text-align: center;
+            font-size: 40px;
+            color: #555;
+        }
+        
+        #buttonPanel {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-weight: 650;
+            text-align: center;
+            font-size: 40px;
+        }
+        
+        #text {
+            position: relative;
+            margin-left: 16%;
+            margin-right: 16%;
+            /* font-family: 'Michroma'; */
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 22px;
+            text-align: left;
+            color: #555;
+        }
+        
+        #descriptive-title {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-weight: 650;
+            text-align: center;
+            font-size: 20px;
+            color: #555;
+        }
+        
+        #descriptive-text {
+            position: relative;
+            margin-left: 16%;
+            margin-right: 16%;
+            /* font-family: 'Michroma'; */
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 18px;
+            text-align: center;
+            color: #555;
+        }
+        
+        #annotations {
+            float: right;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 15px;
+        }
+        
+        #button-bar {
+            text-align: center;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 15px;
+        }
+        
+        #scatterplot {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+        }
+        
+        #legends {
+            position: relative;
+            margin-left: 16%;
+            margin-right: 16%;
+            /* font-family: 'Michroma'; */
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 18px;
+            text-align: center;
+            color: #555;
+        }
+        
+        #countriesMap {
+            FONT-WEIGHT: 200;
+            background-color: #F5F5F5;
+            /* stroke: black; */
+            /* border: black; */
+            text-align: center;
+            float: center;
+            flex-direction: row;
+        }
+        
+        button {
+            width: 200px;
+            height: 30px;
+            padding: 3px;
+            margin: 20px;
+            background-color: transparent;
+            border-radius: 4px;
+            border: 1px solid #bbb;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            /* padding-right: 10px;
+            margin-right: 10px; */
+        }
+        
+        .containerfix {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            gap: 15px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        function closeAndRefresh() {
+            window.location.reload(true);
+        }
+    </script>
+</head>
+
+<body>
+    <!-- <span onclick="closeAndRefresh();">&#10006;</span> -->
+    <div style="background: #f5f5f7;">
+        <br>
+        <p id="title">What contributes to our happiness?
+        </p>
+
+        <br>
+
+    </div>
+
+    <div id="scatterplotdiv">
+        <p id="descriptive-title">
+            Part I: How does each country's GDP and location contributes to its happiness index
+        </p>
+        <p id="descriptive-text">
+            Let's take a look at how different countries at different regions perform in their GDPs and happiness level.
+        </p>
+        <svg id="scatterplot" height="800" width="1200" style="margin-top:50px">
+            <g id="main-plot" height="800" width="1200"></g>
+            <!-- <g id="mini-map" width="200" height="200" transform="translate(699,1)">
+              <rect x="0" y="0" width="200" height="200" stroke="black" stroke-width="1" fill="white" opacity="1"/>
+            </g>
+               -->
+            <div id="panel">
+            </div>
+        </svg>
+        <text id='label' x='400' y='400' text-anchor='end' alighment-baseline='hanging'> </text>
+        <p id="descriptive-title">
+            Clickable Legends for showing country's regions
+        </p>
+        <div id="button-bar">
+            <button style="color:#fde725" onclick="showContinents('Western Europe')">Western Europe</button>
+            <button style="color:#31688e" onclick="showContinents('Central and Eastern Europe')">Central and Eastern Europe</button>
+            <button style="color:#ccbe9f" onclick="showContinents('North America')">North America</button>
+            <button style="color:#1f9e89" onclick="showContinents('Latin America and Caribbean')">Latin America and Caribbean</button>
+            <button style="color:#35b779" onclick="showContinents('Middle East and Northern Africa')">Middle East and Northern Africa</button>
+            <button style="color:#6ece58" onclick="showContinents('Australia and New Zealand')">Australia and New Zealand</button>
+            <button style="color:#31688e" onclick="showContinents('Eastern Asia')">Eastern Asia</button>
+            <button style="color:#26828e" onclick="showContinents('Southeastern Asia')">Southeastern Asia</button>
+            <button style="color:#482878" onclick="showContinents('Sub-Saharan Africa')">Sub-Saharan Africa</button>
+            <button style="color:#440154" onclick="showContinents('Southern Asia')">Southern Asia</button>
+
+            <button onclick="showContinents('all')">Show All</button>
+        </div>
+    </div>
+
+    <div style="background: #f5f5f7;">
+        <br>
+        <p id="descriptive-title">
+            Which countries did the best in corresponding attributes?
+        </p>
+        <p id="descriptive-text">
+            You could interact with the map to see what happens. There are multiple factors that helps to contribute to its happiness index. The extents of family(Family), each country's economical development(GDP), the life expectancy(Life), personal freedom(Freedom),
+            extent of corruption(Trust) and Generosity of each country's people all contributed to its happiness index score. If you want to know which country does the best on certain factors, you could click on the buttons below the lollipop chart and
+            zoom in and out with the map to see what happens.
+        </p>
+        <br>
+
+
+    </div>
+
+    <div id="mapDiv">
+
+        <h4 id="descriptive-text">Choose a filter</h4>
+        <div id="buttonPanel"> </div>
+        <br>
+        <br>
+        <ul class="containerfix">
+
+            <svg id="countriesMap" height="400" width="600"></svg>
+
+            <div id="secondbutton">
+                <div id="secondtitle">
+                    <ul id="sectitle">What's the Top Ten Country ranked for each categories you selected?</ul>
+                </div>
+                <div id="my_dataviz"></div>
+            </div>
+
+
+        </ul>
+
+    </div>
+
+
+    <br/>
+
+    <br/><br/><br/><br/><br/>
+    <br/>
+
+
+
+    <div class="footer">
+        <p id="main-subtitle">
+            <b>INFO 5311 HW2</b>
+            <br>
+            <p></p>Marcus Fang
+
+
+        </p>
+        <p style="text-align: center; font-size: 80%; color: #7c7c7f;">
+            Data Source:
+            <a href="https://www.kaggle.com/unsdsn/world-happiness?select=2016.csv" target="_blank">World Happiness Report from Kaggle
+          </a>
+        </p>
+    </div>
+    <script>
+        console.log("Hello World!")
+        var year = 2019
+        const mainplot = d3.select("svg g#main-plot");
+        const legend1 = d3.select("svg#legends");
+        const width = mainplot.attr("width");
+        const height = mainplot.attr("height");
+        globalFactor = "Family"
+        const margin = {
+            top: 10,
+            right: 10,
+            bottom: 50,
+            left: 60
+        };
+        let tooltipWidth = 200;
+        let tooltipHeight = 60;
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+        let annotations = mainplot.append("g").attr("id", "annotations");
+        let chartArea = mainplot.append("g").attr("id", "points")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // tooltip
+        var div = d3.select("#scatterplotdiv").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+
+        // mouseover 
+        const mouseover = mainplot.append("g").attr("class", "mouseover")
+            .attr("transform", `translate(${margin.left + 15},${margin.top + 15})`);
+
+        function lenlimit(str) {
+            const dummytxt = mouseover.append("text").attr("class", "legendtext").attr("visibility", "hidden");
+            dummytxt.text(str)
+            let length = dummytxt.node().getComputedTextLength()
+            dummytxt.remove()
+            return length;
+        }
+
+        const frame = mouseover.append("rect").attr("class", "frame")
+            .attr("x", 630).attr("y", 365)
+            .attr("rx", 3).attr("ry", 3)
+            //.attr("width", 210)
+            .attr("height", 120);
+
+        const textbox = mouseover.append("g").attr("transform", "translate(10,10)");
+
+        function updateMouseover(d) {
+            textbox.html('');
+
+            let countryname = `Country: ${d["Country"]}`;
+            let gdpval = `GDP: ${d["GDP"]}`;
+            let happinessval = `Happiness: ${d["Happiness Score"]}`;
+            let regionval = `Region: ${d["Region"]}`;
+            let trustval = `Government Corruption: ${d["Trust"]}`;
+
+            let maxWidth = Math.max(lenlimit(regionval), lenlimit(happinessval))
+            frame.attr("width", maxWidth + 100);
+
+            textbox.append("text").text(countryname)
+                .attr("x", 630).attr("y", 380);
+            textbox.append("text").text(regionval)
+                .attr("x", 630).attr("y", 400);
+            textbox.append("text").text(happinessval)
+                .attr("x", 630).attr("y", 420);
+            textbox.append("text").text(gdpval)
+                .attr("x", 630).attr("y", 440);
+
+            textbox.append("text").text(trustval)
+                .attr("x", 630).attr("y", 460);
+        }
+
+        // data analysis
+        let colorScale;
+        var happiness;
+        const requestData = async function() {
+            happiness = await d3.csv("dataset.csv", d3.autoType);
+            console.log("fds");
+
+
+            const happyExtent = d3.extent(happiness, d => d["Happiness Score"]);
+            const happyScale = d3.scaleLinear().domain(happyExtent).range([chartHeight, 0]);
+            const gdpExtent = d3.extent(happiness, d => d['GDP']);
+            const gdpScale = d3.scaleLinear().domain(gdpExtent).range([0, chartWidth]);
+            const trustExtent = d3.extent(happiness, d => d['Trust']);
+            const trustScale = d3.scaleLinear().domain(trustExtent).range([0, 25]);
+
+            const colorsRegion = happiness.map(d => d["Region"]);
+
+
+            divergentScale = ["#fde725", "#b5de2b", "#6ece58", "#35b779", "#1f9e89", "#26828e", "#31688e", "#3e4989", "#482878", "#440154"]
+            var colorScale = d3.scaleOrdinal()
+                .domain(colorsRegion)
+                .range(divergentScale);
+
+            let leftAxis = d3.axisLeft(happyScale);
+            let leftGridlines = d3.axisLeft(happyScale)
+                .tickSize(-chartWidth - 10)
+                .tickFormat("")
+            let bottomAxis = d3.axisBottom(gdpScale);
+            let bottomGridlines = d3.axisBottom(gdpScale)
+                .tickSize(-chartHeight - 10)
+                .tickFormat("")
+            annotations.append("g")
+                .attr("class", "y axis")
+                .attr("transform", `translate(${margin.left - 10},${margin.top})`)
+                .call(leftAxis)
+            annotations.append("g")
+                .attr("class", "y gridlines")
+                .attr("transform", `translate(${margin.left - 10},${margin.top})`)
+                .call(leftGridlines);
+            annotations.append("g")
+                .attr("class", "x axis")
+                .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+                .call(bottomAxis);
+            annotations.append("g")
+                .attr("class", "x gridlines")
+                .attr("transform", `translate(${margin.left},${chartHeight + margin.top + 10})`)
+                .call(bottomGridlines);
+
+            annotations.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", width)
+                .attr("y", height - 6)
+                .text("GDP per Capita Index");
+
+            annotations.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("x", 120)
+                .attr("y", -2)
+                .attr("dy", ".75em")
+                .attr("transform", "rotate(0)")
+                .text("Happiness Score");
+
+
+            let circles = chartArea.selectAll("circle")
+                .data(happiness)
+                .join("circle")
+                .attr("cx", d => gdpScale(d['GDP']))
+                .attr("cy", d => happyScale(d['Happiness Score']))
+                .attr("r", d => trustScale(d['Trust'] / 2))
+                .attr("fill", d => colorScale(d['Region']))
+                .attr("class", function(d) {
+                    if (d['Region'] === "Western Europe") {
+                        return "WesternEurope";
+                    } else if (d['Region'] == 'North America') {
+                        return "NorthAmerica";
+                    } else if (d["Region"] == 'Middle East and Northern Africa') {
+                        return "MiddleEast";
+                    } else if (d["Region"] == 'Eastern Asia') {
+                        return "EasternAsia";
+                    } else if (d["Region"] == 'Sub-Saharan Africa') {
+                        return "Sub-Saharan";
+                    } else if (d["Region"] == 'Central and Eastern Europe') {
+                        return "CentralEurope";
+                    } else if (d["Region"] == 'Latin America and Caribbean') {
+                        return "LatinAmerica";
+                    } else if (d["Region"] == 'Australia and New Zealand') {
+                        return "Australia";
+                    } else if (d["Region"] == 'Southeastern Asia') {
+                        return "SoutheasternAsia";
+                    } else if (d["Region"] == 'Southern Asia') {
+                        return "SouthernAsia";
+                    } else {
+                        return "all";
+                    }
+                })
+                .attr("opacity", 0.6)
+
+            .attr("label", d => d["Country"])
+                .on("mouseover", mouseover);
+
+            /////////// newly added mouseover event//////////
+            circles.on("mouseover", function(d) {
+                //console.log(dataset);
+                mouseover.attr("visibility", "");
+                d3.select(this)
+                    .transition().duration(200)
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 4)
+                    //.attr("fill", lighten(colorScale(d => d['Country'])));
+
+                updateMouseover(d3.select(this).datum());
+                //updatePanel(d);
+
+
+            });
+
+            circles.on("mouseout", function() {
+                mouseover.attr("visibility", "hidden");
+                d3.select(this)
+                    .transition().duration(200)
+                    .attr("stroke-width", 0)
+                    //.attr("fill", colorScale(d => d['Country']));
+                    // updatePanel({});
+
+            });
+
+            ///////////////// Quoted from Prof Rzeszotarski's Feb 14th class ////
+            let panelHeader = d3.select("#panel").append("h5");
+            let table = d3.select("#panel").append("table");
+
+            function updatePanel(row) {
+                let rowCopy = Object.assign({}, row);
+                let title = rowCopy.title;
+                delete rowCopy.title;
+                panelHeader.text(title);
+
+                let kvPairs = Object.entries(rowCopy);
+                console.log(kvPairs);
+
+                let rows = table.selectAll("tr").data(kvPairs)
+                    .join(enter => enter.append("tr"),
+                        update => update.selectAll("td").remove(),
+                        exit => exit.remove());
+
+                rows.append("td").append("strong").text(d => d[0]);
+                rows.append("td").text(d => d[1]);
+
+            }
+
+            let surface = annotations.append("g").raise()
+                .style("pointer-events", "all") // What allows it to capture mouse evt
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            surface.append("rect")
+                .attr("x1", 0)
+                .attr("y1", 0)
+                .attr("width", chartWidth)
+                .attr("height", chartHeight)
+                .attr("fill", "none");
+
+
+            surface.call(d3.brush().on("start", brushStart).on("brush", brushed));
+
+            function brushStart(event) {
+                circles.attr("fill", d => colorScale(d['Region']));
+            }
+
+            function brushed({
+                selection: [
+                    [x0, y0],
+                    [x1, y1]
+                ]
+            }) {
+
+                let numPoints = 0;
+                circles.attr("fill", d => {
+
+                    let x = gdpScale(d['GDP'])
+                    let y = happyScale(d['Happiness Score'])
+
+                    if ((x > x0 && x < x1) && (y > y0 && y < y1)) {
+                        numPoints++;
+                        return "red";
+                    } else {
+                        return colorScale(d['Region']);
+                    }
+
+                });
+
+            }
+            ///////////////// above Quoted from Prof Rzeszotarski's Feb 14th class ////
+
+            const country_boundaries = await d3.json("countries.geo.json");
+            visualiseStateMap(country_boundaries, colorScale, "countriesMap")
+
+            function addGraticule(map, path) {
+                var graticule = d3.geoGraticule10();
+                map.append("path").attr("class", "graticule").attr("d", path(graticule))
+                    .style("stroke", "black")
+                    .style("fill", "#1453ad")
+                    .style("stroke-width", ".05");
+            }
+
+
+            function visualiseStateMap(country_boundaries, colorScale, svgName) {
+                console.log("Visualising: ", svgName)
+                const map = d3.select("#" + svgName).style("fill", "#44A7C4");
+                const mapWidth = map.attr("width");
+                const mapHeight = map.attr("height");
+                var countries = topojson.feature(country_boundaries, country_boundaries.features);
+                var countriesMesh = topojson.feature(country_boundaries, country_boundaries.features);
+                var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], country_boundaries);
+                var path = d3.geoPath().projection(projection);
+                let viewport = map.append("g");
+
+                // STATE MESH
+                viewport.append("path").datum(countriesMesh)
+                    .attr("class", "country-outline")
+                    .attr("fill", "none")
+                    .attr("d", path);
+
+                const [tooltip, nameTxt, hapinessScoreTxt, countTxt] = addTooltip(map, "hover")
+
+                viewport.selectAll("path.country").data(country_boundaries.features)
+                    .join("path")
+                    .attr("class", "country")
+                    //.attr("note", d => d.id)
+                    .attr("d", path)
+                    .style("stroke", "black")
+                    .style("fill", "#1453ad")
+                    .style("stroke-width", ".3")
+                    .on('mouseover', mouseEntersPlot)
+                    .on('mouseout', mouseLeavesPlot)
+
+                let momesh = map.append("path")
+                    .attr("fill", "none")
+                    .attr("class", "mouseover outline")
+                    .attr("d", "");
+
+
+                var zoom = d3.zoom()
+                    .scaleExtent([1, 10])
+
+                .on("zoom", mapZoomed);
+
+
+                map.call(zoom);
+                map.call(zoom.transform, d3.zoomIdentity);
+
+                function mapZoomed({
+                    transform
+                }) {
+                    viewport.attr("transform", transform.toString());
+                    viewport.select(".state-outline")
+                        .style("stroke-width", 2 / transform.k);
+                    viewport.select(".county-outline")
+                        .style("stroke-width", 1 / transform.k);
+                    viewport.select(".county-outline")
+                        .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+                    viewport.selectAll(".county")
+                        .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+                }
+
+
+
+                function mouseEntersPlot() {
+                    let element = d3.select(this);
+
+                    const country = element.datum();
+                    const countryName = country.properties.name;
+                    console.log(countryName)
+                    tooltip.style("visibility", "visible").attr("visibility", "visible");
+                    let selectedCountry;
+                    happiness.forEach((d, i) => {
+                        if (countryName == d.Country) {
+                            selectedCountry = d
+                        }
+                    })
+                    nameText = `Name: ${selectedCountry["Country"]}`
+                    nameTxt.text(nameText);
+                    hapinessText = `Happiness Score: ${selectedCountry["Happiness Score"]}`
+                    hapinessScoreTxt.text(hapinessText);
+                    countTxt.text(`${globalFactor} Score: ${selectedCountry[globalFactor]}`)
+
+                    var mo = topojson.mesh(country_boundaries, country_boundaries.features, function(a, b) {
+                        return a.id === countryName || b.id === countryName;
+                    });
+                    momesh.datum(mo).attr("d", path)
+                        .attr("stroke", "white")
+                        .attr("stroke-width", 20);
+                }
+
+
+                function mouseLeavesPlot() {
+                    let state = d3.select(this);
+                    tooltip.style("visibility", "hidden");
+                    momesh.attr("d", "");
+                }
+
+
+            }
+
+            var margin2 = {
+                    top: 30,
+                    right: 30,
+                    bottom: 70,
+                    left: 60
+                },
+                width2 = 460 - margin2.left - margin2.right,
+                height2 = 400 - margin2.top - margin2.bottom;
+
+
+            //////////////wtf????????
+            var svg2 = d3.select("#my_dataviz")
+                .append("svg")
+                .attr("width", width2 + margin2.left + margin2.right)
+                .attr("height", height2 + margin2.top + margin2.bottom)
+                .append("g")
+                .attr("transform",
+                    "translate(" + margin2.left + "," + margin2.top + ")");
+
+            function update(factor) {
+                globalFactor = factor;
+                if (factor == "clear") {
+                    console.log("factor: clear")
+                    svg2.selectAll("*").remove();
+                    d3.selectAll("text").text("")
+                } else {
+                    yearList = happiness.filter(function(d) {
+                        return (d.Year == year)
+                    })
+                    sortedYearList = yearList.sort((a, b) => d3.descending(a[factor], b[factor]))
+                    topTenCountries = sortedYearList.slice(0, 10)
+                    console.log("factor: ", factor)
+                    factorExtent = d3.extent(topTenCountries, d => d[factor])
+                    happinessExtent = d3.extent(topTenCountries, d => d["Happiness_Score"])
+                    countryList = []
+
+
+                    topTenCountries.forEach(d => {
+                        countryList.push(d['Country'])
+                    });
+                    var factorScale = d3.scaleLinear()
+                        .domain([factorExtent[0] - 0.01, factorExtent[1] + 0.01])
+                        .range([height2, 0])
+
+                    var happinessScale = d3.scaleLinear()
+                        .domain(happinessExtent)
+                        .range([-height2, 0]);
+
+
+                    const countryScale = d3.scaleBand()
+                        .domain(countryList)
+                        .range([0, width2])
+                        .padding(1);
+                    const axisBottom = d3.axisBottom(countryScale)
+                    const axisLeft = d3.axisLeft(factorScale)
+                    console.log(topTenCountries)
+                    var xAxis = svg2.append("g")
+                        .attr("transform", "translate(0," + height2 + ")")
+                        .call(axisBottom)
+                        .attr("class", "myXaxis")
+                        .transition()
+                        .selectAll("text")
+                        .style("text-anchor", "end")
+                        .style("font-family", "Trebuchet MS")
+                        .style("font-size", 14)
+                        .attr("dx", "-.8em")
+                        .attr("dy", ".15em")
+                        .attr("transform", "rotate(-65)");
+
+
+                    var yAxis = svg2.append("g")
+                        .attr("class", "myYaxis")
+                        .transition()
+                        .duration(1000)
+                        .call(axisLeft);
+
+
+
+                    var lines = svg2.selectAll("g.myline")
+                        .data(topTenCountries)
+                        .join("line")
+                        // .enter()
+                        .attr("class", "myline")
+                        .transition()
+                        .duration(1000)
+                        .attr("x1", d => countryScale(d.Country))
+                        .attr("x2", d => countryScale(d.Country))
+                        .attr("y1", d => factorScale(factorExtent[0] - 0.01))
+                        .attr("y2", d => factorScale(d[factor]))
+                        .attr("stroke", "grey")
+
+
+                    var circle = svg2.selectAll("circle")
+                        .data(topTenCountries)
+                        .join("circle")
+                        .transition()
+                        .duration(1000)
+                        .attr("cx", d => countryScale(d.Country))
+                        .attr("cy", d => factorScale(d[factor]))
+                        .attr("r", 13)
+                        .attr("fill", "#ccccff");
+                    //circle
+                    //.enter()
+
+
+
+
+                    const map = d3.select("#countriesMap");
+                    countriesList = []
+                    topTenCountries.forEach((d, i) => {
+                        countriesList.push(d.Country)
+                    })
+
+                    function highlightTop(list, d) {
+                        if (countriesList.includes(d.properties.name)) {
+                            return colorScale(d.properties.name)
+                        } else {
+                            return "white"
+                        }
+                    }
+
+                    map.selectAll("path.country")
+                        .style("fill", d => highlightTop(countriesList, d))
+                }
+            }
+
+            update("Family")
+            buttons = d3.select("#buttonPanel");
+            factors = ["Family", "GDP", "Life", "Freedom", "Trust", "Generosity"]
+
+            factors.forEach((factor, i) => {
+                buttons
+                    .append("button")
+                    .text(factor)
+                    .attr("id", factor)
+                    .classed("button", true)
+                    .attr("width", 200)
+                    .attr("height", 100)
+                    .style("padding-left", "20")
+                    .style("padding-left", "20")
+                    .on('click', function() {
+                        update("clear")
+                        update(factor)
+                    });
+            })
+
+            function addTooltip(map, path) {
+                let tooltip = map.append("g")
+                    .attr("class", name)
+                    .attr("visibility", "hidden");
+                let toolrect = tooltip.append("rect")
+                    .attr("fill", "black")
+                    .attr("opacity", 0.9)
+                    .attr("x", 10)
+                    .attr("y", 0)
+                    .attr("width", tooltipWidth)
+                    .attr("height", tooltipHeight)
+
+                let nameTxt = tooltip.append("text")
+                    .attr("fill", "white")
+                    .attr("text-anchor", "middle")
+                    .attr("alignment-baseline", "hanging")
+                    .attr("x", tooltipWidth / 2.0)
+                    .attr("y", 2);
+                let hapinessScoreTxt = tooltip.append("text")
+                    .attr("fill", "white")
+                    .attr("text-anchor", "middle")
+                    .attr("alignment-baseline", "hanging")
+                    .attr("x", tooltipWidth / 2.0)
+                    .attr("y", 22);
+                let countTxt = tooltip.append("text")
+                    .attr("fill", "white")
+                    .attr("text-anchor", "middle")
+                    .attr("alignment-baseline", "hanging")
+                    .attr("x", tooltipWidth / 2.0)
+                    .attr("y", 42);
+
+                return [tooltip, nameTxt, hapinessScoreTxt, countTxt];
+
+            }
+
+
+        }
+        requestData();
+
+        function showContinents(place) {
+            console.log("CLICKED");
+            if (place === "Western Europe") {
+                console.log("westerneu");
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.WesternEurope").each(function() {
+                    console.log("fu");
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "North America") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.NorthAmerica").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "Middle East and Northern Africa") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.MiddleEast").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "Eastern Asia") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.EasternAsia").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "Sub-Saharan Africa") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.Sub-Saharan").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "Central and Eastern Europe") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.CentralEurope").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "Latin America and Caribbean") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.LatinAmerica").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "Australia and New Zealand") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.Australia").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "Southeastern Asia") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.SoutheasternAsia").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "Southern Asia") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle.SouthernAsia").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+            if (place === "all") {
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "hidden");
+                })
+                d3.selectAll("circle").each(function() {
+                    d3.select(this).transition().duration(900).style("visibility", "visible");
+                })
+            }
+        }
+    </script>
+
+</body>
+
+</html>
